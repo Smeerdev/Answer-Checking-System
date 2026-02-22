@@ -1,15 +1,16 @@
 # MCQ Answer Sheet Checking System
 
 ## Overview
-The **MCQ Answer Sheet Checking System** is an automated grading tool that evaluates student answer sheets against a predefined answer key. The project leverages **Convolutional Neural Networks (CNN)** for Optical Character Recognition (OCR) to read and evaluate scanned student responses with high precision.
+The **MCQ Answer Sheet Checking System** is an automated grading tool that evaluates student answer sheets against a predefined answer key. The project leverages **Convolutional Neural Networks (CNN)** for Optical Character Recognition (OCR) to read and evaluate scanned student responses.
 
 ## Features
 - **Automated Grading**: Uses CNN to recognize and compare answers.
 - **Metadata Generation**: Extracts and saves relevant data for verification.
 - **GUI Interface**: Simplified interface for ease of use.
-- **Customizable Reports**: Generates grading reports in various formats (CSV/PDF).
+- **Customizable Reports**: Generates grading reports in various formats.
 
 ## Project Structure
+```
 MCQ-AnswerSheet-Checker/
 │── AnswerKey/             # Contains Model Answer Sheet & Marking Scheme
 │── Metadata/              # Stores generated metadata JSON files
@@ -19,50 +20,55 @@ MCQ-AnswerSheet-Checker/
 │── cnn_model.h5           # Pre-trained CNN model
 │── main.py                # Core script for GUI, metadata generation, and grading
 │── requirements.txt       # List of required Python libraries
-│── .gitignore             # Excludes venv, pycache, and temp files
+│── .gitignore             # Excludes venv, __pycache__, and temp files
 │── README.md              # Project documentation
-
+```
 
 ## Requirements
 - Python **3.6 - 3.11**
 - Required Libraries:
   ```bash
   pip install opencv-python pandas tensorflow pillow openpyxl
-Installation & Usage
-1. Clone the Repository
-Bash
-git clone [https://github.com/Smeerdev/Answer-Checking-System.git](https://github.com/Smeerdev/Answer-Checking-System.git)
+  ```
+
+## Installation & Usage
+### 1. Clone the Repository
+```bash
+git clone https://github.com/Smeerdev/Answer-Checking-System.git
 cd MCQ-AnswerSheet-Checker
-2. Install Dependencies
-Bash
+```
+
+### 2. Install Dependencies
+```bash
 pip install -r requirements.txt
-3. Run the Application
-Bash
+```
+### 3. Run the Application
+```bash
 python main.py
-4. Steps to Grade Answer Sheets
-Open the MCQ Answer Sheet Checking System GUI.
+```
 
-Load ModelAnswer.png from the AnswerKey folder.
+### 4. Steps to Grade Answer Sheets
+1. Open the **MCQ Answer Sheet Checking System** GUI.
+2. Load `ModelAnswer.png` from the **AnswerKey** folder.
+3. Generate metadata and verify it (metadata is saved in the **Metadata** folder).
+4. Load the metadata and **StudentAnswerSheets** folder.
+5. Select the output report format and location.
+6. Click **Start Grading**.
 
-Generate metadata and verify it (metadata is saved in the Metadata folder).
-
-Load the metadata and StudentAnswerSheets folder.
-
-Select the output report format and location.
-
-Click Start Grading.
-
-Model Training
+## Model Training
 If you wish to train the model from scratch, run:
-
-Bash
+```bash
 python train_cnn.py
-This will train a new cnn_model.h5 based on the dataset provided in prepared_dataset/.
+```
+This will train a new **cnn_model.h5** based on the dataset.
 
-Output
-The graded results are saved in the chosen output directory in CSV or PDF format.
-
-Contributing
+## Output
+- The graded results are saved in the chosen output directory in CSV or PDF format.
+- 
+## Contributing
 Feel free to open issues or submit pull requests to improve the grading accuracy or GUI features.
 
-Author: Sameer Garg
+---
+### Author: Sameer Garg
+
+
