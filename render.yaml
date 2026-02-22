@@ -1,0 +1,10 @@
+# Render.com Blueprint: deploy the webapp as a Web Service
+# Docs: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: answer-checking-system
+    env: python
+    region: oregon
+    rootDir: webapp
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app

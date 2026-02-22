@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MCQ Answer Sheet Checker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f0f12;
+      --surface: #1a1a1f;
+      --border: #2a2a32;
+      --text: #e8e8ed;
+      --muted: #8888a0;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --success: #22c55e;
+      --error: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+    .card p {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.25rem;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.05s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary {
+      background: var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: #3a3a45; }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .file-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.25rem;
+      background: var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+    .file-label:hover { background: #3a3a45; }
+    .file-name {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-left: 0.5rem;
+    }
+    .step {
+      margin-bottom: 1.25rem;
+    }
+    .step:last-child { margin-bottom: 0; }
+    #metadataStatus, #gradeStatus {
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    .status-ok { color: var(--success); }
+    .status-err { color: var(--error); }
+    .results-table-wrap {
+      overflow-x: auto;
+      margin-top: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      color: var(--muted);
+      font-weight: 600;
+    }
+    tr:last-child td { border-bottom: none; }
+    .hidden { display: none !important; }
+    .api-url {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 1rem;
+      word-break: break-all;
+    }
+    .spinner {
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>MCQ Answer Sheet Checker</h1>
+    <p class="subtitle">Upload model answer, then student sheets to get grades.</p>
+
+    <div class="card">
+      <h2>Step 1: Model answer</h2>
+      <p>Upload the model/correct answer sheet image (PNG or JPG).</p>
+      <div class="step">
+        <label class="file-label">
+          <input type="file" id="modelFile" accept=".png,.jpg,.jpeg" />
+          <span>Choose model answer image</span>
+        </label>
+        <span class="file-name" id="modelFileName">No file chosen</span>
+      </div>
+      <button type="button" class="btn btn-primary" id="btnMetadata" disabled>Generate metadata</button>
+      <div id="metadataStatus"></div>
+    </div>
+
+    <div class="card">
+      <h2>Step 2: Student sheets</h2>
+      <p>Upload one or more student answer sheet images.</p>
+      <div class="step">
+        <label class="file-label">
+          <input type="file" id="sheetsFile" accept=".png,.jpg,.jpeg" multiple />
+          <span>Choose student sheet(s)</span>
+        </label>
+        <span class="file-name" id="sheetsFileName">No files chosen</span>
+      </div>
+      <button type="button" class="btn btn-primary" id="btnGrade" disabled>Grade sheets</button>
+      <div id="gradeStatus"></div>
+      <div class="results-table-wrap hidden" id="resultsWrap">
+        <table>
+          <thead>
+            <tr><th>Student</th><th>Score</th><th>Out of</th><th>%</th></tr>
+          </thead>
+          <tbody id="resultsBody"></tbody>
+        </table>
+        <button type="button" class="btn btn-secondary" id="btnDownloadCsv" style="margin-top: 1rem;">Download CSV</button>
+      </div>
+    </div>
+
+    <p class="api-url" id="apiUrl">API: same origin</p>
+  </div>
+  <script>
+    (function () {
+      const API_BASE = window.API_BASE || window.location.origin;
+      document.getElementById("apiUrl").textContent = "API: " + API_BASE;
+
+      let metadataJson = null;
+      const modelInput = document.getElementById("modelFile");
+      const sheetsInput = document.getElementById("sheetsFile");
+      const btnMetadata = document.getElementById("btnMetadata");
+      const btnGrade = document.getElementById("btnGrade");
+      const metadataStatus = document.getElementById("metadataStatus");
+      const gradeStatus = document.getElementById("gradeStatus");
+      const resultsWrap = document.getElementById("resultsWrap");
+      const resultsBody = document.getElementById("resultsBody");
+      const btnDownloadCsv = document.getElementById("btnDownloadCsv");
+      const modelFileName = document.getElementById("modelFileName");
+      const sheetsFileName = document.getElementById("sheetsFileName");
+
+      modelInput.addEventListener("change", function () {
+        modelFileName.textContent = this.files.length ? this.files[0].name : "No file chosen";
+        btnMetadata.disabled = !this.files.length;
+      });
+      sheetsInput.addEventListener("change", function () {
+        const n = this.files.length;
+        sheetsFileName.textContent = n ? n + " file(s) chosen" : "No files chosen";
+        btnGrade.disabled = !n || !metadataJson;
+      });
+
+      function setStatus(el, ok, msg) {
+        el.textContent = msg;
+        el.className = ok ? "status-ok" : "status-err";
+      }
+      function setLoading(el, loading) {
+        if (loading) {
+          el.disabled = true;
+          el.innerHTML = '<span class="spinner"></span> Processing…';
+        } else {
+          el.disabled = false;
+          el.textContent = el === btnMetadata ? "Generate metadata" : "Grade sheets";
+        }
+      }
+
+      btnMetadata.addEventListener("click", async function () {
+        const file = modelInput.files[0];
+        if (!file) return;
+        setLoading(btnMetadata, true);
+        metadataStatus.textContent = "";
+        const form = new FormData();
+        form.append("model_answer", file);
+        try {
+          const r = await fetch(API_BASE + "/api/metadata", { method: "POST", body: form });
+          const data = await r.json();
+          if (!r.ok) {
+            setStatus(metadataStatus, false, data.error || "Request failed");
+            setLoading(btnMetadata, false);
+            return;
+          }
+          metadataJson = data;
+          setStatus(metadataStatus, true, "Metadata ready. You can now upload student sheets.");
+          btnGrade.disabled = !sheetsInput.files.length;
+        } catch (e) {
+          setStatus(metadataStatus, false, "Network error: " + e.message);
+        }
+        setLoading(btnMetadata, false);
+      });
+
+      btnGrade.addEventListener("click", async function () {
+        if (!metadataJson || !sheetsInput.files.length) return;
+        setLoading(btnGrade, true);
+        gradeStatus.textContent = "";
+        resultsWrap.classList.add("hidden");
+        const form = new FormData();
+        form.append("metadata", JSON.stringify(metadataJson));
+        for (const f of sheetsInput.files) form.append("sheets", f);
+        try {
+          const r = await fetch(API_BASE + "/api/grade", { method: "POST", body: form });
+          if (!r.ok) {
+            const data = await r.json().catch(() => ({}));
+            setStatus(gradeStatus, false, data.error || "Grading failed");
+            setLoading(btnGrade, false);
+            return;
+          }
+          const data = await r.json();
+          const results = data.results || [];
+          resultsBody.innerHTML = results.map(function (row) {
+            if (row.error) return "<tr><td>" + escapeHtml(row.filename) + "</td><td colspan='3'>" + escapeHtml(row.error) + "</td></tr>";
+            return "<tr><td>" + escapeHtml(row.filename) + "</td><td>" + row.score + "</td><td>" + row.total + "</td><td>" + row.percentage + "%</td></tr>";
+          }).join("");
+          resultsWrap.classList.remove("hidden");
+          setStatus(gradeStatus, true, "Grading complete.");
+        } catch (e) {
+          setStatus(gradeStatus, false, "Network error: " + e.message);
+        }
+        setLoading(btnGrade, false);
+      });
+
+      btnDownloadCsv.addEventListener("click", async function () {
+        if (!metadataJson || !sheetsInput.files.length) return;
+        const form = new FormData();
+        form.append("metadata", JSON.stringify(metadataJson));
+        for (const f of sheetsInput.files) form.append("sheets", f);
+        try {
+          const r = await fetch(API_BASE + "/api/grade?format=csv", { method: "POST", body: form });
+          if (!r.ok) return;
+          const blob = await r.blob();
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "grades.csv";
+          a.click();
+          URL.revokeObjectURL(a.href);
+        } catch (e) {}
+      });
+
+      function escapeHtml(s) {
+        const div = document.createElement("div");
+        div.textContent = s;
+        return div.innerHTML;
+      }
+    })();
+  </script>
+</body>
+</html>

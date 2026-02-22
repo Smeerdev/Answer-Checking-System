@@ -1,0 +1,32 @@
+# Virtual environment
+webapp/venv/
+venv/
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Optional: ignore large model if you host it elsewhere (uncomment if needed)
+# cnn_model.h5
+
+# Training data and large datasets (not needed for deployment)
+prepared_dataset/
+Metadata/
+StudentAnswerSheets/
+AnswerKey/
